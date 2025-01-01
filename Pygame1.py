@@ -11,7 +11,7 @@ pygame.init()
 width, height = 800, 600
 screen = pygame.display.set_mode((width, height)) # Creates Screen
 
-FPS = 60
+FPS = 160
 clock = pygame.time.Clock()
 
 # Background Image
