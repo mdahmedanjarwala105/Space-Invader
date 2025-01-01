@@ -131,7 +131,7 @@ def collisionChecker(enemy_x_axis, enemy_y_axis, bullet_x_axis, bullet_y_axis):
 is_text_moving = False
 
 # Run the Screen and the events performed on the screen
-running = True
+running = True # When I quit the window I want this to be false so that while loop stops running
 
 while running:
     
@@ -230,3 +230,5 @@ while running:
     player(player_x_axis, player_y_axis) # Draw the player
     score_Val(text_x_axis, text_y_axis) # Render the score
     pygame.display.update() # Update the display
+    
+pygame.quit()
