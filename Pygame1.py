@@ -11,6 +11,9 @@ pygame.init()
 width, height = 800, 600
 screen = pygame.display.set_mode((width, height)) # Creates Screen
 
+FPS = 60
+clock = pygame.time.Clock()
+
 # Background Image
 
 background = pygame.image.load("background_image.png")
@@ -134,6 +137,8 @@ is_text_moving = False
 running = True # When I quit the window I want this to be false so that while loop stops running
 
 while running:
+    
+    clock.tick(FPS)
     
     # Fill the screen with a color to prevent ghosting
     screen.fill((0, 255, 0))  # Black background
