@@ -81,7 +81,23 @@ bullet_y_axis_speed = 3
 bullet_state = "ready" # If the bullet is in ready mode it means it isn't moving yet
 # If the bullet is in fire mode it means it is moving
 
+# colors
+
+WHITE = (255, 255, 255)
+
+# Fonts
+
+LETTER_FONT = pygame.font.Font("freesansbold.ttf", 32)
+WORD_FONT = pygame.font.Font("freesansbold.ttf", 52)
+TITLE_FONT = pygame.font.Font("freesansbold.ttf", 62)
+
+# Checking if the Score is moving after the score is incremented or not
 score_state = "not-moving"
+
+# Button Variable
+BUTTON_RADIUS = 50
+BUTTON_X_Axis = width // 2
+BUTTON_Y_Axis = 320
 
 # Creating Scores
 
@@ -131,109 +147,145 @@ def collisionChecker(enemy_x_axis, enemy_y_axis, bullet_x_axis, bullet_y_axis):
     if distance < 27:
         return True
 
+def drawBig():
+    screen.fill((WHITE))  # WHITE background
+    screen.blit(background, (0, 0))
+    text = TITLE_FONT.render("SpaceInvader Game", 1, WHITE)
+    screen.blit(text, (width/2 - text.get_width()/2, 20))
+    pygame.draw.circle(screen, WHITE, (BUTTON_X_Axis, BUTTON_Y_Axis), BUTTON_RADIUS, 3)
+    text = LETTER_FONT.render("PLAY", 1, WHITE)
+    screen.blit(text, (BUTTON_X_Axis - text.get_width()/2, BUTTON_Y_Axis - text.get_height()/2))
+    pygame.display.update()
+
 is_text_moving = False
 
-# Run the Screen and the events performed on the screen
-running = True # When I quit the window I want this to be false so that while loop stops running
+def main():
+    
+    global text_x_axis, player_x_axis, player_x_axis_speed, bullet_x_axis, bullet_y_axis, bullet_state, score, is_text_moving
+    
+    # Run the Screen and the events performed on the screen
+    running = True # When I quit the window I want this to be false so that while loop stops running
 
-while running:
-    
-    clock.tick(FPS)
-    
-    # Fill the screen with a color to prevent ghosting
-    screen.fill((0, 255, 0))  # Black background
-    screen.blit(background, (0, 0))
-    
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT: # closes the screen
-            running = False
-    
-        if event.type == pygame.KEYDOWN: # Keydown means key pressed if we use .KEYUP that means key released
-            if event.key == pygame.K_LEFT:
-                player_x_axis_speed = -2 # Assign a value to move left
-            if event.key == pygame.K_RIGHT:
-                player_x_axis_speed = 2 # Assign a value to move right
-            if event.key == pygame.K_SPACE:
-                if bullet_state == "ready":
-                    
-                    mixer.Sound("laser.wav").play() # sound of firing
-                    
-                    bullet_x_axis = player_x_axis # assigning the old value of player x-axis so that it doesn't take and move constantly with player
-                    bullet(bullet_x_axis, bullet_y_axis)
+    while running:
         
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                player_x_axis_speed = 0
+        clock.tick(FPS)
         
-    
-    player_x_axis += player_x_axis_speed # Update player position
-    
-    # Creating Boundaries
-    
-    if player_x_axis <= 0:
-        player_x_axis = 0
-    elif player_x_axis >= 736: # using number 736 because of the player image pixel which is 64 (800 - 64)
-        player_x_axis = 736
-    
-    # Creating Boundaries
-    for i in range(num_of_enemies):
+        # Fill the screen with a color to prevent ghosting
+        screen.fill((WHITE))  # WHITE background
+        screen.blit(background, (0, 0))
         
-        # End Game
-        if enemy_y_axis[i] > 440:
-            for j in range(num_of_enemies):
-                enemy_y_axis[j] = 2000
-            end_game()
-            break
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT: # closes the screen
+                running = False
         
-        enemy_x_axis[i] += enemy_x_axis_speed[i] # Update player position
-        
-        if enemy_x_axis[i] <= 0:
-            enemy_x_axis_speed[i] = 1.5
-            enemy_y_axis[i] += enemy_y_axis_speed[i]
-        elif enemy_x_axis[i] >= 736: # using number 736 because of the player image pixel which is 64 (800 - 64)
-            enemy_x_axis_speed[i] = -1.5
-            enemy_y_axis[i] += enemy_y_axis_speed[i]
+            if event.type == pygame.KEYDOWN: # Keydown means key pressed if we use .KEYUP that means key released
+                if event.key == pygame.K_LEFT:
+                    player_x_axis_speed = -2 # Assign a value to move left
+                if event.key == pygame.K_RIGHT:
+                    player_x_axis_speed = 2 # Assign a value to move right
+                if event.key == pygame.K_SPACE:
+                    if bullet_state == "ready":
+                        
+                        mixer.Sound("laser.wav").play() # sound of firing
+                        
+                        bullet_x_axis = player_x_axis # assigning the old value of player x-axis so that it doesn't take and move constantly with player
+                        bullet(bullet_x_axis, bullet_y_axis)
             
-        # Collision Checking
-    
-        collision = collisionChecker(enemy_x_axis[i], enemy_y_axis[i], bullet_x_axis, bullet_y_axis)
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                    player_x_axis_speed = 0
+            
         
-        if collision:
+        player_x_axis += player_x_axis_speed # Update player position
+        
+        # Creating Boundaries
+        
+        if player_x_axis <= 0:
+            player_x_axis = 0
+        elif player_x_axis >= 736: # using number 736 because of the player image pixel which is 64 (800 - 64)
+            player_x_axis = 736
+        
+        # Creating Boundaries
+        for i in range(num_of_enemies):
             
-            mixer.Sound("explosion.wav").play()
+            # End Game
+            if enemy_y_axis[i] > 440:
+                for j in range(num_of_enemies):
+                    enemy_y_axis[j] = 2000
+                end_game()
+                return
             
+            enemy_x_axis[i] += enemy_x_axis_speed[i] # Update player position
+            
+            if enemy_x_axis[i] <= 0:
+                enemy_x_axis_speed[i] = 1.5
+                enemy_y_axis[i] += enemy_y_axis_speed[i]
+            elif enemy_x_axis[i] >= 736: # using number 736 because of the player image pixel which is 64 (800 - 64)
+                enemy_x_axis_speed[i] = -1.5
+                enemy_y_axis[i] += enemy_y_axis_speed[i]
+                
+            # Collision Checking
+        
+            collision = collisionChecker(enemy_x_axis[i], enemy_y_axis[i], bullet_x_axis, bullet_y_axis)
+            
+            if collision:
+                
+                mixer.Sound("explosion.wav").play()
+                
+                bullet_y_axis = 480
+                bullet_state = "ready"
+                
+                score += 1
+                is_text_moving = True
+                
+                enemy_x_axis[i] = random.randint(0, 736)
+                enemy_y_axis[i] = random.randint(25, 250)
+                
+            enemy(enemy_x_axis[i], enemy_y_axis[i], i) # Draw the enemy
+            
+        # Moving Bullet
+        
+        if bullet_y_axis == 0:
             bullet_y_axis = 480
             bullet_state = "ready"
-            
-            score += 1
-            is_text_moving = True
-            
-            enemy_x_axis[i] = random.randint(0, 736)
-            enemy_y_axis[i] = random.randint(25, 250)
-            
-        enemy(enemy_x_axis[i], enemy_y_axis[i], i) # Draw the enemy
         
-    # Moving Bullet
-    
-    if bullet_y_axis == 0:
-        bullet_y_axis = 480
-        bullet_state = "ready"
-    
-    if bullet_state == "fire":
-        bullet(bullet_x_axis, bullet_y_axis)
-        bullet_y_axis -= bullet_y_axis_speed
-      
-    # Moving Text
+        if bullet_state == "fire":
+            bullet(bullet_x_axis, bullet_y_axis)
+            bullet_y_axis -= bullet_y_axis_speed
         
-    if is_text_moving:
-        text_x_axis += 2
-    
-    if text_x_axis > 800:
-        text_x_axis = 10
-        is_text_moving = False
-    
-    player(player_x_axis, player_y_axis) # Draw the player
-    score_Val(text_x_axis, text_y_axis) # Render the score
-    pygame.display.update() # Update the display
-    
-pygame.quit()
+        # Moving Text
+            
+        if is_text_moving:
+            text_x_axis += 2
+        
+        if text_x_axis > 800:
+            text_x_axis = 10
+            is_text_moving = False
+        
+        player(player_x_axis, player_y_axis) # Draw the player
+        score_Val(text_x_axis, text_y_axis) # Render the score
+        pygame.display.update() # Update the display
+        
+
+def menu():
+    FPS = 60
+    clock = pygame.time.Clock()
+    # Run the Screen and the events performed on the screen
+    running = True # When I quit the window I want this to be false so that while loop stops running
+
+    while running:
+        
+        clock.tick(FPS)
+        # Fill the screen with a color to prevent ghosting
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT: # closes the screen
+                running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_x_axis, mouse_y_axis = pygame.mouse.get_pos()
+                distance = math.sqrt((math.pow(BUTTON_X_Axis - mouse_x_axis,2)) + (math.pow(BUTTON_Y_Axis - mouse_y_axis, 2)))
+                if distance < BUTTON_RADIUS:
+                    main()
+                    
+        drawBig()
+        
+menu()  # Call the menu function to start the game
