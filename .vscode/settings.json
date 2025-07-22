@@ -1,3 +1,5 @@
 {
-  "python.defaultInterpreterPath": "/Users/mdahmedking6/.local/share/virtualenvs/SpaceInvader-XgXIXW11"
+  "python.defaultInterpreterPath": "/Users/mdahmedking6/.local/share/virtualenvs/SpaceInvader-XgXIXW11",
+  "python-envs.defaultEnvManager": "ms-python.python:system",
+  "python-envs.pythonProjects": []
 }
