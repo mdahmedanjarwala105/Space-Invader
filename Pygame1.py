@@ -49,7 +49,7 @@ game_over_font = pygame.font.Font("freesansbold.ttf", 64)
 
 
 # Function to check if a new enemy position overlaps with existing enemies
-def enemy_overlap(new_x_axis: int, new_y_axis: int, existing_axis: int):
+def enemy_overlap(new_x_axis: int, new_y_axis: int, existing_axis: list):
     for old_x_axis, old_y_axis in existing_axis:
         distance = math.sqrt(
             (math.pow(old_x_axis - new_x_axis, 2))
@@ -212,7 +212,7 @@ def main():
                 if event.key == pygame.K_SPACE:
                     if bullet_state == "ready":
 
-                        mixer.Sound("laser.wav").play()  # sound of firing
+                        pygame.mixer.Sound("laser.wav").play()  # sound of firing
 
                         bullet_x_axis = player_x_axis  # assigning the old value of player x-axis so that it doesn't take and move constantly with player
                         bullet(bullet_x_axis, bullet_y_axis)
@@ -261,7 +261,7 @@ def main():
 
             if collision:
 
-                mixer.Sound("explosion.wav").play()
+                pygame.mixer.Sound("explosion.wav").play()
 
                 bullet_y_axis = 480
                 bullet_state = "ready"
